@@ -7,35 +7,26 @@ import std::io;
 
 fn void repl() 
 {
-    String input;
-    while (1) {
+    while (1) @pool() 
+    {
         io::print("cmd: ");
-        if (try in = io::readline(mem)) 
-        {
-            input = in;
+        String? input = io::treadline();
 
-            Lexer lex = lexer::new_Lexer(input);
-            Parser parser = parser::new_Parser(&lex);
-            ast::Node? node = parser.expr();
+        if (catch input) continue;
+        
+        Lexer lex = lexer::new_Lexer(input);
+        Parser parser = parser::new_Parser(&lex);
+        ast::Node? node = parser.expr();
 
-            if (catch err = node) 
-            {
-                io::printn(err);
-                continue;
-            }
+        if (catch node) continue;
 
-            defer node.free(mem);
+        defer node.free(mem);
 
-            int? result = interpreter::visit(node);
-            if (catch err = result) 
-            {
-                io::printn(err);
-                continue;
-            }
+        int? result = interpreter::visit(node);
+        if (catch result) continue;
 
-            io::printn(result);
-        }
-    }
+        io::printn(result);
+    };
 }
 
 fn void main() 
