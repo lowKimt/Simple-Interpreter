@@ -36,24 +36,15 @@ fn ast::Node? Parser.factor(Parser *self)
     switch (self.curToken.type) 
     {
     case "INT":
-        Integer *result = allocator::new(self.allocator, ast::Integer);
-
-        if (try resint = self.curToken.literal.to_int()) 
-        {
-            result.value = resint;
-            self.eat("INT")!;
-            return result;
-        }
-        allocator::free(self.allocator, result);
-        return INVALID_TOKEN_TYPE?;
+        int resint = self.curToken.literal.to_int() ?? INVALID_TOKEN_TYPE?!;
+        self.eat("INT")!;
+        return allocator::new(self.allocator, Integer, { .value = resint });
     
     case "LPAREN":
         self.eat("LPAREN")!;
         ast::Node node = self.expr()!;
         self.eat("RPAREN")!;
-        ParenExpr *result = allocator::new(self.allocator, ast::ParenExpr);
-        result.expr = node;
-        return result;
+        return allocator::new(self.allocator, ast::ParenExpr, { .expr = node });
 
     default:
         return INVALID_TOKEN_TYPE?;
