@@ -47,64 +47,34 @@ fn tokens::Token Lexer.next_token(Lexer* self) {
 
         if (self.current_char >= '0' && self.current_char <= '9') {
             String value = self.integer();
-            return (tokens::Token){
-                "INT",
-                value,
-            };
+            return { "INT", value };
         }
 
         switch (self.current_char) {
         case '+':
             self.advance();
-            return (tokens::Token){
-                "PLUS",
-                "+",
-            };
+            return { "PLUS", "+" };
         case '-':
             self.advance();
-            return (tokens::Token){
-                "MINUS",
-                "-",
-            };
+            return { "MINUS", "-" };
         case '*':
             self.advance();
-            return (tokens::Token){
-                "MUL",
-                "*",
-            };
+            return { "MUL", "*" };
         case '/':
             self.advance();
-            return (tokens::Token){
-                "DIV",
-                "/",
-            };
+            return { "DIV", "/" };
         case '%':
             self.advance();
-            return (tokens::Token){
-                "MOD",
-                "%",
-            };
+            return { "MOD", "%" };
         case '(': 
             self.advance();
-            return (tokens::Token){
-                "LPAREN",
-                "(",
-            };
+            return { "LPAREN", "(" };
         case ')':
             self.advance();
-            return (tokens::Token){
-                "RPAREN",
-                ")",
-            };
+            return { "RPAREN", ")" };
         default:
-            return (tokens::Token){
-                "ILLEGAL",
-                "",
-            };
+            return { "ILLEGAL", "" };
         }
     }
-    return (tokens::Token){
-        "EOF",
-        "",
-    };
+    return { "EOF", "" };
 }
